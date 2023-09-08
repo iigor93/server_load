@@ -52,7 +52,7 @@ def get_redis():
         try:
             start = datetime.strptime(timestamp[0], "%Y:%m:%d:%H:%M:%S")
             stop = datetime.strptime(timestamp[1], "%Y:%m:%d:%H:%M:%S")
-        except ValueError:
+        except (ValueError, IndexError):
             return {
                 "ERR": "Не верный̆ формат данных",
                 "message": "Пример запроса {'timestamp': ['2023:01:01:00:00:00', '2023:05:01:00:00:00']}"}

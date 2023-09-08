@@ -1,8 +1,9 @@
 from datetime import datetime
 
 from flask import Flask, request, jsonify
+from werkzeug.exceptions import UnsupportedMediaType
 
-from utils import get_load, set_to_redis, get_from_redis, remove_from_redis
+from utils import get_load, get_from_redis, remove_from_redis
 
 app = Flask(__name__)
 
@@ -10,14 +11,13 @@ app = Flask(__name__)
 @app.route("/", methods=['GET', 'POST'])
 def get_data():
     if request.method == 'GET':
-        data = get_load(cpu=True, ram=True, swap=True)
-        set_to_redis(method="GET", data=data)
+        data = get_load(cpu=True, ram=True, swap=True, method="GET")
         return jsonify(data)
 
     if request.method == 'POST':
         try:
             load = request.json['load']
-        except KeyError:
+        except (UnsupportedMediaType, KeyError):
             return {
                 "ERR": "Не верный̆ формат данных",
                 "message": "Пример запроса {'load': ['cpu', 'ram', 'swap']}"}
@@ -34,8 +34,7 @@ def get_data():
                 ram = True
             elif item == 'swap':
                 swap = True
-        data = get_load(cpu=cpu, ram=ram, swap=swap)
-        set_to_redis(method="POST", data=data)
+        data = get_load(cpu=cpu, ram=ram, swap=swap, method="POST")
         return jsonify(data)
 
 
@@ -45,13 +44,9 @@ def get_redis():
         return jsonify(get_from_redis())
 
     if request.method == 'POST':
-
-        if not request.is_json:
-            return jsonify({'removed': remove_from_redis()})
-
         try:
             timestamp = request.json['timestamp']
-        except KeyError:
+        except (UnsupportedMediaType, KeyError):
             return jsonify({'removed': remove_from_redis()})
 
         try:
@@ -62,7 +57,8 @@ def get_redis():
                 "ERR": "Не верный̆ формат данных",
                 "message": "Пример запроса {'timestamp': ['2023:01:01:00:00:00', '2023:05:01:00:00:00']}"}
 
-        return jsonify({'removed': remove_from_redis(int(datetime.timestamp(start)), int(datetime.timestamp(stop)))})
+        return jsonify({'removed': remove_from_redis(start=int(datetime.timestamp(start)),
+                                                     stop=int(datetime.timestamp(stop)))})
 
 
 if __name__ == '__main__':

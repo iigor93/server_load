@@ -10,7 +10,7 @@ REDIS_KEY = "timestamp"
 
 def redis_connection(func):
     def wrapper(*args, **kwargs):
-        with redis.Redis(host='localhost', port=6379) as r:
+        with redis.Redis(host='127.0.0.1', port=6379) as r:
             return func(r=r, *args, **kwargs)
     return wrapper
 

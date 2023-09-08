@@ -26,7 +26,7 @@ def converter(data: dict | str, method: str | None = None) -> dict | str:
         """ from redis from str for json"""
         response = {}
         data_list = data.split(";")
-        timestamp = str(datetime.fromtimestamp(int(data_list[1])))
+        timestamp = str(datetime.fromtimestamp(int(data_list[1])).strftime("%Y:%m:%d:%H:%M:%S"))
 
         response = {timestamp: {"method": data_list[3], "load": {}}}
         data = data_list[4:]

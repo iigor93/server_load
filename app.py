@@ -1,3 +1,5 @@
+from datetime import datetime
+
 from flask import Flask, request, jsonify
 
 from utils import get_load, set_to_redis, get_from_redis, remove_from_redis
@@ -43,15 +45,24 @@ def get_redis():
         return jsonify(get_from_redis())
 
     if request.method == 'POST':
+
+        if not request.is_json:
+            return jsonify({'removed': remove_from_redis()})
+
         try:
             timestamp = request.json['timestamp']
         except KeyError:
             return jsonify({'removed': remove_from_redis()})
 
-        start = int(timestamp[0])
-        stop = int(timestamp[1])
-        print(timestamp, stop, start)
-        return "OK "  # jsonify({'removed': remove_from_redis(start, stop)})
+        try:
+            start = datetime.strptime(timestamp[0], "%Y:%m:%d:%H:%M:%S")
+            stop = datetime.strptime(timestamp[1], "%Y:%m:%d:%H:%M:%S")
+        except ValueError:
+            return {
+                "ERR": "Не верный̆ формат данных",
+                "message": "Пример запроса {'timestamp': ['2023:01:01:00:00:00', '2023:05:01:00:00:00']}"}
+
+        return jsonify({'removed': remove_from_redis(int(datetime.timestamp(start)), int(datetime.timestamp(stop)))})
 
 
 if __name__ == '__main__':

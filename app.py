@@ -51,7 +51,7 @@ def get_redis():
         start = int(timestamp[0])
         stop = int(timestamp[1])
         print(timestamp, stop, start)
-        return "OK"  # jsonify({'removed': remove_from_redis(start, stop)})
+        return "OK "  # jsonify({'removed': remove_from_redis(start, stop)})
 
 
 if __name__ == '__main__':

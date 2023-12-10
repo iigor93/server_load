@@ -57,7 +57,7 @@ def converter(data: dict | str, method: str | None = None) -> dict | str:
 @redis_connection
 def get_from_redis(r: redis.Redis) -> list:
     data = r.zrange(REDIS_KEY, 0, -1)
-    return [converter(item.decode("utf-8")) for item in data]
+    return [converter(item) for item in data]
 
 
 @redis_connection

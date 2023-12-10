@@ -68,7 +68,7 @@ def get_set_temp():
 
     if request.method == 'POST':
         data = request.json['temp']
-        set_temp_to_redis(data)
+        set_temp_to_redis(data=data)
         return Response(status=200)
 
 

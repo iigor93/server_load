@@ -1,9 +1,9 @@
 from datetime import datetime
 
-from flask import Flask, request, jsonify
+from flask import Flask, request, jsonify, Response
 from werkzeug.exceptions import UnsupportedMediaType
 
-from utils import get_load, get_from_redis, remove_from_redis
+from utils import get_load, get_from_redis, remove_from_redis, get_temp_from_redis, set_temp_to_redis
 
 app = Flask(__name__)
 
@@ -59,6 +59,17 @@ def get_redis():
 
         return jsonify({'removed': remove_from_redis(start=int(datetime.timestamp(start)),
                                                      stop=int(datetime.timestamp(stop)))})
+
+
+@app.route("/temp", methods=['GET', 'POST'])
+def get_redis():
+    if request.method == 'GET':
+        return jsonify(get_temp_from_redis())
+
+    if request.method == 'POST':
+        data = request.json['temp']
+        set_temp_to_redis(data)
+        return Response(status=200)
 
 
 if __name__ == '__main__':

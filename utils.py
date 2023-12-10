@@ -65,3 +65,13 @@ def remove_from_redis(r: redis.Redis, start: int | None = None, stop: int | None
     if start and stop:
         return r.zremrangebyscore(REDIS_KEY, start, stop)  # start stop - unix timestamp
     return r.delete(REDIS_KEY)
+
+
+@redis_connection
+def get_temp_from_redis(r: redis.Redis) -> str:
+    return r.get("temp")
+
+
+@redis_connection
+def set_temp_to_redis(r: redis.Redis, data: str) -> None:
+    return r.set("temp", data)

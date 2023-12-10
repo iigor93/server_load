@@ -74,5 +74,5 @@ def get_temp_from_redis(r: redis.Redis) -> dict:
 
 @redis_connection
 def set_temp_to_redis(r: redis.Redis, data: str) -> None:
-    data_datetime = f"{data}, time {datetime.now(tz=timezone(timedelta(hours=3)))}"
+    data_datetime = f"{data}, time {datetime.now(tz=timezone(timedelta(hours=3))).strftime('%d %b %Y %H:%m:%S')}"
     return r.set("temp", data_datetime)

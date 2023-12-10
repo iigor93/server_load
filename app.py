@@ -62,7 +62,7 @@ def get_redis():
 
 
 @app.route("/temp", methods=['GET', 'POST'])
-def get_redis():
+def get_set_temp():
     if request.method == 'GET':
         return jsonify(get_temp_from_redis())
 

@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import datetime, timezone, timedelta
 from time import localtime, mktime
 
 import psutil
@@ -74,5 +74,5 @@ def get_temp_from_redis(r: redis.Redis) -> dict:
 
 @redis_connection
 def set_temp_to_redis(r: redis.Redis, data: str) -> None:
-    data_datetime = f"{data}, time {datetime.now()}"
+    data_datetime = f"{data}, time {datetime.now(tz=timezone(timedelta(hours=3)))}"
     return r.set("temp", data_datetime)

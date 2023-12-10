@@ -68,8 +68,8 @@ def remove_from_redis(r: redis.Redis, start: int | None = None, stop: int | None
 
 
 @redis_connection
-def get_temp_from_redis(r: redis.Redis) -> str:
-    return r.get("temp")
+def get_temp_from_redis(r: redis.Redis) -> dict:
+    return {"data": str(r.get("temp"))}
 
 
 @redis_connection

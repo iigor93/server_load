@@ -72,7 +72,7 @@ def get_temp_from_redis(r: redis.Redis) -> dict:
     temp_hum = str(r.get("temp")).split("/")[0]
     d_time = str(r.get("temp")).split("/")[1]
     diff = datetime.now() - datetime.strptime(d_time, '%d %b %Y %H:%M:%S')
-    return {"data": temp_hum, "last_msg": d_time, "time from last msg": diff}
+    return {"data": temp_hum, "last_msg": d_time, "time from last msg": str(diff)}
 
 
 @redis_connection

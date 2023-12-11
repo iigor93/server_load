@@ -69,10 +69,13 @@ def remove_from_redis(r: redis.Redis, start: int | None = None, stop: int | None
 
 @redis_connection
 def get_temp_from_redis(r: redis.Redis) -> dict:
-    return {"data": str(r.get("temp"))}
+    temp_hum = str(r.get("temp")).split("/")[0]
+    d_time = str(r.get("temp")).split("/")[1]
+    diff = datetime.now() - datetime.strptime(d_time, '%d %b %Y %H:%M:%S')
+    return {"data": temp_hum, "last_msg": d_time, "time from last msg": diff}
 
 
 @redis_connection
 def set_temp_to_redis(r: redis.Redis, data: str) -> None:
-    data_datetime = f"{data}, time {datetime.now(tz=timezone(timedelta(hours=3))).strftime('%d %b %Y %H:%M:%S')}"
+    data_datetime = f"{data}/{datetime.now(tz=timezone(timedelta(hours=3))).strftime('%d %b %Y %H:%M:%S')}"
     return r.set("temp", data_datetime)

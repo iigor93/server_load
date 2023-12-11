@@ -71,8 +71,7 @@ def remove_from_redis(r: redis.Redis, start: int | None = None, stop: int | None
 def get_temp_from_redis(r: redis.Redis) -> dict:
     temp_hum = str(r.get("temp")).split("/")[0]
     d_time = str(r.get("temp")).split("/")[1]
-    diff = datetime.now() - datetime.strptime(d_time, '%d %b %Y %H:%M:%S')
-    return {"data": temp_hum, "last_msg": d_time, "time from last msg": str(diff)}
+    return {"data": temp_hum, "last_msg": d_time, "current time": str(datetime.now(tz=timezone(timedelta(hours=3))).strftime('%d %b %Y %H:%M:%S'))}
 
 
 @redis_connection
